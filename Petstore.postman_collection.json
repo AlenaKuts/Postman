@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "235531c5-9231-473d-b6df-a0e6a2ed17aa",
+		"name": "Petstore",
+		"description": "Task: create a collection in Postman. Queries that should be in the collection:\n\n1. Create a new pet (POST /pet method), and fill in all the keys with your own example values. Write a script on the tests tab that takes the ID of the created pet from the response body and writes it to the collection.\n2. Write a script that takes the name and tags of the pet from the response body and writes it to the collection. Specify a check on the Tests tab, that the tag name from the request body equals the tag name from the server response body.\n3. Get pet information by id (GET /pet/{petId} method), using the previously recorded id pet variable from the collection in the request.  \n    On the tests tab, write a script that will send the following request “Updates a pet in the store with form data” (method POST /pet/{petId}) to update the “status” key to “sold” (sold).  \n    Hint: use pm.sendRequest\n4. As for negative checks, create additional queries:   \nPet ID is invalid when created - error 400 (bad input)\nPet ID does not exist upon receipt - error 404 (Pet not found)\nUnsupported data format when creating - 415 error Unsupported Media Type\nWhen creating a pet, what must be done to display this 500 Server Error?",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18546145"
+	},
+	"item": [
+		{
+			"name": "AddNewPet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let respData = pm.response.json()\r",
+							"let requestData = JSON.parse(request.data);\r",
+							"\r",
+							"pm.collectionVariables.set(\"petId\", respData.id)\r",
+							"pm.collectionVariables.set(\"tagsName\", respData.tags.name)\r",
+							"\r",
+							"pm.test(\"Check tags.name value\", function () {\r",
+							"    pm.expect(respData.tags.name).to.eql(requestData.tags.name);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{$randomInt}},\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"dog\"\r\n    },\r\n    \"name\": \"{{$randomFirstName}}\",\r\n    \"photoUrls\": [\r\n        \"test\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"black\"\r\n        }\r\n    ],\r\n    \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const putRequest = {\r",
+							"  url: pm.collectionVariables.get(\"url\") + \"/pet/\",\r",
+							"  method: 'PUT',\r",
+							"  header: 'Content-Type:application/json',\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"    \"id\": pm.collectionVariables.get(\"petId\"),\r",
+							"    \"category\": {\r",
+							"        \"id\": 1,\r",
+							"        \"name\": \"dog\"\r",
+							"    },\r",
+							"    \"name\": \"Jeremy\",\r",
+							"    \"photoUrls\": [\r",
+							"        \"test\"\r",
+							"    ],\r",
+							"    \"tags\": [\r",
+							"        {\r",
+							"            \"id\": 1,\r",
+							"            \"name\": \"black\"\r",
+							"        }\r",
+							"    ],\r",
+							"    \"status\": \"sold\"\r",
+							"    })\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(putRequest, (error, response) => {\r",
+							"  console.log(error ? error : response.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet/{{petId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdatePetStatus",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"id\": {{petId}},\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"dog\"\r\n    },\r\n    \"name\": \"Jeremy\",\r\n    \"photoUrls\": [\r\n        \"test\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"black\"\r\n        }\r\n    ],\r\n    \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddNewPetResponse400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"check status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 123a,\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"{{$randomFirstName}}\",\r\n  \"photoUrls\": [\r\n    \"test\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"black\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddNewPetResponse500",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"check status code is 500\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"test\",\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"{{$randomFirstName}}\",\r\n  \"photoUrls\": [\r\n    \"test\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"black\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddNewPetResponse415",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"check status code is 415\", function () {\r",
+							"    pm.response.to.have.status(415);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "Text",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPetNotFoundResponse404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"check status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/pet/0",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"pet",
+						"0"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://petstore.swagger.io/v2",
+			"type": "string"
+		},
+		{
+			"key": "petId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tagsName",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
