@@ -1,4 +1,4 @@
-Postman collections from test tasks
+## A Postman collections from test tasks
 
 Petstore API.
 Task: create a collection in Postman. Queries that should be in the collection:
