@@ -1,6 +1,6 @@
 ## Postman collections from test tasks
 
-Petstore API.
+### Petstore API
 Task: create a collection in Postman. Queries that should be in the collection:
 1. Create a new pet (POST /pet method), and fill in all the keys with your example values. Write a script on the tests tab that takes the ID of the created pet from the response body and writes it to the collection.
 2. Write a script that takes the name and tags of the pet from the response body and writes it to the collection. Specify a check on the Tests tab, that the tag name from the request body equals the tag name from the server response body.
