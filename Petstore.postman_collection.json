@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "235531c5-9231-473d-b6df-a0e6a2ed17aa",
 		"name": "Petstore",
-		"description": "Task: create a collection in Postman. Queries that should be in the collection:\n\n1. Create a new pet (POST /pet method), and fill in all the keys with your own example values. Write a script on the tests tab that takes the ID of the created pet from the response body and writes it to the collection.\n2. Write a script that takes the name and tags of the pet from the response body and writes it to the collection. Specify a check on the Tests tab, that the tag name from the request body equals the tag name from the server response body.\n3. Get pet information by id (GET /pet/{petId} method), using the previously recorded id pet variable from the collection in the request.  \n    On the tests tab, write a script that will send the following request “Updates a pet in the store with form data” (method POST /pet/{petId}) to update the “status” key to “sold” (sold).  \n    Hint: use pm.sendRequest\n4. As for negative checks, create additional queries:   \nPet ID is invalid when created - error 400 (bad input)\nPet ID does not exist upon receipt - error 404 (Pet not found)\nUnsupported data format when creating - 415 error Unsupported Media Type\nWhen creating a pet, what must be done to display this 500 Server Error?",
+		"description": "Task: create a collection in Postman. Queries that should be in the collection:\n\n1. Create a new pet (POST /pet method), and fill in all the keys with your example values. Write a script on the tests tab that takes the ID of the created pet from the response body and writes it to the collection.\n    \n2. Write a script that takes the name and tags of the pet from the response body and writes it to the collection. Specify a check on the Tests tab, that the tag name from the request body equals the tag name from the server response body.\n    \n3. Get pet information by id (GET /pet/{petId} method), using the previously recorded id pet variable from the collection in the request.  \n    On the tests tab, write a script that will send the following request “Updates a pet in the store with form data” (method POST /pet/{petId}) to update the “status” key to “sold” (sold).  \n    Hint: use pm.sendRequest\n    \n4. As for negative checks, create additional queries:  \n    Pet ID is invalid when created - error 400 (bad input)  \n    Pet ID does not exist upon receipt - error 404 (Pet not found)  \n    Unsupported data format when creating - 415 error Unsupported Media Type  \n    When creating a pet, what must be done to display this 500 Server Error?",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "18546145"
 	},
@@ -18,14 +18,16 @@
 							"let requestData = JSON.parse(request.data);\r",
 							"\r",
 							"pm.collectionVariables.set(\"petId\", respData.id)\r",
-							"pm.collectionVariables.set(\"tagsName\", respData.tags.name)\r",
+							"pm.collectionVariables.set(\"tagsName\", respData.tags[0].name)\r",
+							"pm.collectionVariables.set(\"petName\", respData.name)\r",
 							"\r",
 							"pm.test(\"Check tags.name value\", function () {\r",
-							"    pm.expect(respData.tags.name).to.eql(requestData.tags.name);\r",
+							"    pm.expect(respData.tags[0].name).to.eql(requestData.tags[0].name);\r",
 							"});\r",
 							""
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -197,7 +199,7 @@
 			"response": []
 		},
 		{
-			"name": "AddNewPetResponse500",
+			"name": "AddNewPetResponse500_incorrectIdType",
 			"event": [
 				{
 					"listen": "test",
@@ -208,7 +210,8 @@
 							"});\r",
 							""
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -217,7 +220,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"id\": \"test\",\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"{{$randomFirstName}}\",\r\n  \"photoUrls\": [\r\n    \"test\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"black\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"raw": "{\r\n  \"id\": \"test77\",\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"{{$randomFirstName}}\",\r\n  \"photoUrls\": [\r\n    \"test\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"black\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -356,6 +359,11 @@
 		},
 		{
 			"key": "tagsName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "petName",
 			"value": "",
 			"type": "string"
 		}
